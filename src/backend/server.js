@@ -17,7 +17,7 @@ app.use(express.json()); // Parse JSON data from requests
 const db = mysql.createConnection({
     host: 'localhost', // Your MySQL host
     user: 'root',      // Your MySQL username
-    password: 'had%CYM3#schcs',  // Your MySQL password
+    password: 'Padigeri@1234',  // Your MySQL password
     database: 'travelagency' // Your MySQL database name
 });
 
@@ -31,77 +31,30 @@ db.connect((err) => {
 });
 
 // // POST route for Login
-// app.post('/api/login', (req, res) => {
-//     const { email, password } = req.body;
-
-//     // Check if user exists by email
-//     const query = `
-//         SELECT CustomerID, Password FROM Customer WHERE Email = ?;
-//     `;
-
-//     db.query(query, [email], async (err, result) => {
-//         if (err || result.length === 0) {
-//             // If the user doesn't exist or there's a query error, send a 401 response
-//             return res.status(401).json({ success: false, message: 'Invalid credentials' });
-//         }
-
-//         // Extract the customer data
-//         const customer = result[0];
-//         const storedHashedPassword = customer.Password; // This is the hashed password stored in the database
-
-//         try {
-//             // Compare the provided password with the hashed password
-//             const passwordMatch = await bcrypt.compare(password, storedHashedPassword);
-
-//             if (passwordMatch) {
-//                 // Password is correct, return success with CustomerID
-//                 return res.status(200).json({ success: true, message: 'Login successful', customerID: customer.CustomerID });
-//             } else {
-//                 // Password doesn't match
-//                 return res.status(401).json({ success: false, message: 'Invalid credentials' });
-//             }
-//         } catch (error) {
-//             // Handle any errors that occur during bcrypt comparison
-//             return res.status(500).json({ success: false, message: 'Login failed. Please try again later.' });
-//         }
-//     });
-// });
-
-// app.post('/login', (req, res) => {
-//     const { email, password } = req.body;
-
-//     const query = 'SELECT CustomerID, Password FROM Customer WHERE Email = ?';
-//     db.query(query, [email], (err, results) => {
-//         if (err) {
-//             return res.status(500).json({ success: false, message: 'Database error' });
-//         }
-
-//         if (results.length === 0 || results[0].Password !== password) {
-//             return res.status(401).json({ success: false, message: 'Invalid credentials' });
-//         }
-
-//         // Fetch customerID
-//         const customerID = results[0].CustomerID;
-
-//         // Return customerID along with success message
-//         res.json({ success: true, customerID });
-//     });
-// });
-
-app.post('/login', (req, res) => {
+app.post('/api/login', (req, res) => {
     const { email, password } = req.body;
-    
-    // Logic to validate user and fetch customerID from the database
-    const query = 'SELECT CustomerID FROM Customer WHERE email = ? AND password = ?';
-    
-    db.query(query, [email, password], (err, result) => {
+
+    // Fetch the hashed password from the database
+    const query = 'SELECT CustomerID, Password FROM Customer WHERE email = ?';
+    db.query(query, [email], async (err, result) => {
         if (err) {
-            res.status(500).send('Error retrieving customer data');
+            return res.status(500).send('Error retrieving customer data');
         }
-        
+
         if (result.length > 0) {
+            const hashedPassword = result[0].Password;
             const customerID = result[0].CustomerID;
-            res.json({ success: true, customerID });
+
+            // Compare the provided password with the hashed password
+            const passwordMatch = await bcrypt.compare(password, hashedPassword);
+
+            if (passwordMatch) {
+                // If passwords match, log the customer in
+                res.json({ success: true, customerID });
+            } else {
+                // If passwords don't match, return an error
+                res.status(401).send('Invalid credentials');
+            }
         } else {
             res.status(401).send('Invalid credentials');
         }
@@ -209,31 +162,23 @@ app.post('/api/update-car-availability', (req, res) => {
     });
 });
 
-app.get('/api/customer-id', async (req, res) => {
-    const customerEmail = req.query.customerEmail;
-    if (!customerEmail) {
-        return res.status(400).json({ error: 'Customer email is required' });
-    }
-    try {
-        const customer = await db.query('SELECT CustomerID FROM Customer WHERE Email = ?', [customerEmail]);
-        if (customer.length === 0) {
+app.get('/api/customer-details/:customerID', (req, res) => {
+    const customerID = req.params.customerID;
+
+    const query = 'SELECT * FROM Customer WHERE CustomerID = ?';
+    
+    db.query(query, [customerID], (err, result) => {
+        console.log('Database query result:', result); // Add this to check what the query returns
+        if (err) {
+            console.error('Error fetching customer details:', err);
+            return res.status(500).json({ error: 'Error fetching customer details' });
+        }
+        if (result.length === 0) {
             return res.status(404).json({ error: 'Customer not found' });
         }
-        res.json({ customerID: customer[0].CustomerID });
-    } catch (error) {
-        res.status(500).json({ error: 'Error fetching customer ID' });
-    }
-});
-
-// Updated: Get customer details by customerID passed as a route parameter
-app.get('/api/customer-details/:customerID', async (req, res) => {
-    const customerID = req.params.customerID;
-    try {
-        const customer = await db.query('SELECT * FROM Customer WHERE CustomerID = ?', [customerID]);
-        res.json(customer[0]); // Return the first result
-    } catch (error) {
-        res.status(500).json({ error: 'Error fetching customer details' });
-    }
+        console.log('Customer details fetched:', result);
+        res.json(result[0]);
+    });    
 });
 
 app.post('/api/confirm-booking', async (req, res) => {
@@ -244,36 +189,60 @@ app.post('/api/confirm-booking', async (req, res) => {
     }
 
     try {
-        // Insert the booking into the database
-        const query = `
-            INSERT INTO Booking (CustomerID, VehicleID, DriverID, TripDate, BookingDate, StartLocation, EndLocation, TotalCost, PaymentStatus)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'Pending')
-        `;
-        const bookingResult = await db.query(query, [
-            customer.CustomerID, 
-            selectedCar.VehicleID, 
-            selectedCar.DriverID, 
-            tripDate, 
-            bookingDate, 
-            startLocation, 
-            endLocation, 
-            price
-        ]);
+        // Wrap the db.query inside a promise
+        const insertBooking = () => {
+            return new Promise((resolve, reject) => {
+                const query = `
+                    INSERT INTO Booking (CustomerID, VehicleID, DriverID, TripDate, BookingDate, StartLocation, EndLocation, TotalCost, PaymentStatus)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'Pending')
+                `;
+                db.query(query, [
+                    customer.CustomerID, 
+                    selectedCar.VehicleID, 
+                    selectedCar.DriverID, 
+                    tripDate, 
+                    bookingDate, 
+                    startLocation, 
+                    endLocation, 
+                    price
+                ], (err, result) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(result);
+                    }
+                });
+            });
+        };
+
+        const bookingResult = await insertBooking();
 
         // Fetch the newly created booking details
-        const bookingDetailsQuery = `
-            SELECT 
-                b.BookingID, b.TripDate, b.BookingDate, b.StartLocation, b.EndLocation, b.TotalCost, b.PaymentStatus,
-                v.VehicleType, v.LicensePlate, v.Model, 
-                d.FirstName AS DriverFirstName, d.LastName AS DriverLastName, d.Phone AS DriverPhone,
-                c.FirstName AS CustomerFirstName, c.LastName AS CustomerLastName, c.Email AS CustomerEmail, c.Phone AS CustomerPhone
-            FROM Booking b
-            JOIN Vehicle v ON b.VehicleID = v.VehicleID
-            JOIN Driver d ON b.DriverID = d.DriverID
-            JOIN Customer c ON b.CustomerID = c.CustomerID
-            WHERE b.BookingID = ?
-        `;
-        const [bookingDetails] = await db.query(bookingDetailsQuery, [bookingResult.insertId]);
+        const getBookingDetails = () => {
+            return new Promise((resolve, reject) => {
+                const bookingDetailsQuery = `
+                    SELECT 
+                        b.BookingID, b.TripDate, b.BookingDate, b.StartLocation, b.EndLocation, b.TotalCost, b.PaymentStatus,
+                        v.VehicleType, v.LicensePlate, v.Model, 
+                        d.FirstName AS DriverFirstName, d.LastName AS DriverLastName, d.Phone AS DriverPhone,
+                        c.FirstName AS CustomerFirstName, c.LastName AS CustomerLastName, c.Email AS CustomerEmail, c.Phone AS CustomerPhone
+                    FROM Booking b
+                    JOIN Vehicle v ON b.VehicleID = v.VehicleID
+                    JOIN Driver d ON b.DriverID = d.DriverID
+                    JOIN Customer c ON b.CustomerID = c.CustomerID
+                    WHERE b.BookingID = ?
+                `;
+                db.query(bookingDetailsQuery, [bookingResult.insertId], (err, result) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(result[0]);
+                    }
+                });
+            });
+        };
+
+        const bookingDetails = await getBookingDetails();
 
         res.status(200).json({
             success: true,

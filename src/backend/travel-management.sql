@@ -101,4 +101,4 @@ JOIN Driver d ON v.VehicleID = d.AssignedVehicleID
 WHERE v.AvailabilityStatus = 'Available' 
 AND v.VehicleType = 'Sedan';  -- Replace 'Sedan' with an actual value to test
 
-UPDATE Vehicle SET AvailabilityStatus = 'Unavailable' WHERE VehicleID = 2;
+ -- UPDATE Vehicle SET AvailabilityStatus = 'Available' WHERE VehicleID = 2;
