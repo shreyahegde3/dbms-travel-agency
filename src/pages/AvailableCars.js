@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import '../styles/availableCars.css';
 
 const AvailableCars = () => {
     const location = useLocation();

@@ -1,0 +1,186 @@
+.profile-button {
+    position: absolute;
+    top: 0.75rem;
+    left: 0.75rem;
+    width: 2rem;
+    height: 2rem;
+    background-color: #0b63c1;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.profile-button:hover {
+    background-color: #014185;
+    transform: translateY(-1px);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    box-shadow: 0 4px 6px rgba(228, 80, 80, 0.1);
+    position: relative; /* Added for absolute positioning of close button */
+}
+
+.close-button {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: none;
+    background: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #806e6b;
+    transition: color 0.2s ease;
+    padding: 0;
+}
+
+.close-button:hover {
+    color: #f72008;
+}
+
+.modal-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    text-align: center;
+    margin: 0;
+    color: #1a1a1a;
+}
+
+.profile-info {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.info-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.info-label {
+    font-size: 0.875rem;
+    color: #666;
+    font-weight: 500;
+}
+
+.info-value {
+    font-size: 1rem;
+    color: #1a1a1a;
+}
+
+.button-group {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1rem;
+}
+
+.button {
+    flex: 1;
+    padding: 0.75rem;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
+}
+
+.edit-button {
+    background-color: #6B7280;
+    color: white;
+}
+
+.edit-button:hover {
+    background-color: #4B5563;
+}
+
+.delete-button {
+    background-color: #EF4444;
+    color: white;
+}
+
+.delete-button:hover {
+    background-color: #DC2626;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-label {
+    font-size: 0.875rem;
+    color: #666;
+    font-weight: 500;
+}
+
+.form-input {
+    padding: 0.75rem;
+    border: 1px solid #E5E7EB;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border-color 0.2s ease;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #2563EB;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+}
+
+.save-button {
+    background-color: #2563EB;
+    color: white;
+}
+
+.save-button:hover {
+    background-color: #1D4ED8;
+}
+
+.cancel-button {
+    background-color: #E5E7EB;
+    color: #374151;
+}
+
+.cancel-button:hover {
+    background-color: #D1D5DB;
+}

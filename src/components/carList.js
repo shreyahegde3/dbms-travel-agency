@@ -1,22 +1,10 @@
-import React, { useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom'; // Import useLocation
-import '../styles/home.css';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import sedan from '../assets/sedan.jpeg';
 import suv from '../assets/suv.jpeg';
-import CustomerProfile from './CustomerProfile';
 
-const Home = () => {
+const CarList = ({ customerID }) => {
     const navigate = useNavigate();
-    const location = useLocation();  // Use location to access passed state
-    const customerID = location.state?.customerID;  // Retrieve customerID from the passed state
-
-    useEffect(() => {
-        if (customerID) {
-            console.log(`Customer ID: ${customerID}`);
-        } else {
-            console.log('Customer ID is missing');
-        }
-    }, [customerID]);
 
     const carTypes = [
         { id: 1, name: 'Mini', description: 'Compact and economical for city travel.', price: '$20/day' },
@@ -25,13 +13,11 @@ const Home = () => {
     ];
 
     const handleBookNow = (car) => {
-        // Pass customerID and carType through React Router's state
-        navigate('/booking', { state: { carType: car.name, customerID } });  // Pass carType and customerID to booking
+        navigate('/booking', { state: { carType: car.name, customerID } });
     };
 
     return (
         <div className="home-container">
-            <CustomerProfile customerID={customerID} />
             <h1>Available Car Types</h1>
             <div className="car-list">
                 {carTypes.map(car => (
@@ -52,4 +38,4 @@ const Home = () => {
     );
 };
 
-export default Home;
+export default CarList;

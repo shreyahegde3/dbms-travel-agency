@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import '../styles/confirmBooking.css'
 
 const ConfirmBooking = () => {
     const location = useLocation();

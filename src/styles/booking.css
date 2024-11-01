@@ -1,0 +1,67 @@
+/* booking.css */
+.booking-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: rgb(253, 253, 253);
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.booking-container h1 {
+    color: #333;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.booking-container form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.booking-container form div {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.booking-container label {
+    font-weight: bold;
+    color: #444;
+}
+
+.booking-container input,
+.booking-container select {
+    padding: 0.8rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+.booking-container button {
+    background-color: #0066cc;
+    color: white;
+    border: none;
+    padding: 1rem;
+    border-radius: 5px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.booking-container button:hover {
+    background-color: #0052a3;
+}
+
+@media (max-width: 768px) {
+    .booking-container {
+        margin: 1rem;
+        padding: 1rem;
+    }
+
+    .booking-container button {
+        width: 100%;
+        margin: 0.5rem 0;
+    }
+}

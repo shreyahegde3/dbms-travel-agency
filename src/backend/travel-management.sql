@@ -85,6 +85,7 @@ VALUES
 ('SUV', 'LMN9101', 7, 'Ford Explorer', 2021, 'INS11223SUV', 'Available');
 
 SELECT * FROM Vehicle;
+ delete from Vehicle ;
 
 -- Insert 3 drivers, each assigned to one of the vehicles inserted above
 INSERT INTO Driver (FirstName, LastName, Phone, LicenseNumber, ExperienceYears, AssignedVehicleID, AvailabilityStatus)
@@ -102,3 +103,7 @@ WHERE v.AvailabilityStatus = 'Available'
 AND v.VehicleType = 'Sedan';  -- Replace 'Sedan' with an actual value to test
 
  -- UPDATE Vehicle SET AvailabilityStatus = 'Available' WHERE VehicleID = 2;
+ 
+
+ 
+ 
