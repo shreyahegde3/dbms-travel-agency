@@ -1,14 +1,15 @@
 import React, { useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom'; // Import useLocation
+import { useNavigate, useLocation } from 'react-router-dom';
 import '../styles/home.css';
 import sedan from '../assets/sedan.jpeg';
 import suv from '../assets/suv.jpeg';
 import CustomerProfile from './CustomerProfile';
+import { ClipboardList } from 'lucide-react'; // Import the bookings icon
 
 const Home = () => {
     const navigate = useNavigate();
-    const location = useLocation();  // Use location to access passed state
-    const customerID = location.state?.customerID;  // Retrieve customerID from the passed state
+    const location = useLocation();
+    const customerID = location.state?.customerID;
 
     useEffect(() => {
         if (customerID) {
@@ -25,12 +26,48 @@ const Home = () => {
     ];
 
     const handleBookNow = (car) => {
-        // Pass customerID and carType through React Router's state
-        navigate('/booking', { state: { carType: car.name, customerID } });  // Pass carType and customerID to booking
+        navigate('/booking', { state: { carType: car.name, customerID } });
+    };
+
+    const handleViewBookings = () => {
+        navigate('/bookings', { state: { customerID } });
     };
 
     return (
         <div className="home-container">
+            {/* Round View Bookings Icon Button */}
+            <button 
+                onClick={handleViewBookings}
+                className="view-bookings-icon"
+                style={{
+                    position: 'absolute',
+                    top: '60px',
+                    left: '10px',
+                    width: '40px',
+                    height: '40px',
+                    backgroundColor: '#fff',
+                    border: '1px solid #ddd',
+                    borderRadius: '50%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    cursor: 'pointer',
+                    boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
+                    zIndex: 1000,
+                    transition: 'all 0.3s ease'
+                }}
+                onMouseOver={(e) => {
+                    e.currentTarget.style.transform = 'scale(1.1)';
+                    e.currentTarget.style.boxShadow = '0 4px 8px rgba(0,0,0,0.2)';
+                }}
+                onMouseOut={(e) => {
+                    e.currentTarget.style.transform = 'scale(1)';
+                    e.currentTarget.style.boxShadow = '0 2px 5px rgba(0,0,0,0.1)';
+                }}
+            >
+                <ClipboardList size={20} color="#666" />
+            </button>
+
             <CustomerProfile customerID={customerID} />
             <h1>Available Car Types</h1>
             <div className="car-list">

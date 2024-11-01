@@ -8,6 +8,7 @@ import Booking from './pages/Booking';
 import ConfirmBooking from './pages/ConfirmBooking';
 import AvailableCars from './pages/AvailableCars';
 import Payment from './pages/Payment';
+import ViewBookings from './pages/viewBookings';
 
 function App() {
   return (
@@ -21,6 +22,8 @@ function App() {
 
         {/* Route for home page */}
         <Route path="/home" element={<Home />} />
+
+        <Route path="/bookings" element={<ViewBookings />} />
 
         {/* Route for booking page */}
         <Route path="/booking" element={<Booking />} />
